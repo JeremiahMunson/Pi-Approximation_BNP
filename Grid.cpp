@@ -7,43 +7,68 @@
 using namespace std;
 
 
-Grid::Grid(float* sep, float* len)
+Grid::Grid(float* sep, float* len, int* numLines)
 {
     lineSeparation = *sep;
     needleLength = *len;
+    gridSize = *numLines;
     srand(static_cast<unsigned int>(time(0)));
 }
 
 float Grid::approximatePi(int trials)
 {    
-    numTrials = 0;
-    numCrosses = 0;
+    int numTrials = 0;
+    int numCrosses = 0;
     for(numTrials; numTrials < trials; numTrials++)
     {
-        createNeedlePlace(&needleLocation, &needleAngle);
-        checkNeedleCrossLine(&needleLocation, &needleAngle);
+        // Chose to keep as method so that it is easier to understand the code.
+        // This way it is broken up into important tasks so the approximatePi
+        // method isn't too big and confusing.
+        throwNeedle(&numCrosses);
     }
-    return ((2*needleLength / lineSeparation) * (static_cast<float>(numTrials) / static_cast<float>(numCrosses)));
+    return ((2*getNeedleLength() / getLineSeparation()) * (static_cast<float>(numTrials) / static_cast<float>(numCrosses)));
 }
 
-void Grid::createNeedlePlace(float* loc, float* angle)
+/*
+    Only checks in one dimmension because the part of the needle parallel to the lines is irrelevant. The important
+    part is whether or not it crosses the line. Imagine the lines running vertical. The only part of the needle that 
+    matters is the horizontal component because that is how it crosses the grid lines.
+*/
+void Grid::throwNeedle(int* crosses)
 {
-    *loc = static_cast <float> (rand()) / ( static_cast <float> ( RAND_MAX / (10*lineSeparation) ) );
-    *angle = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/360.0));
-}
+    // Creates random float between 0.0 and the number of grid lines times line separation distance. 
+    // Used for the location of the head of the needle.
+    float needleHead = static_cast <float> (rand()) / ( static_cast <float> ( RAND_MAX / (getGridSize()*getLineSeparation()) ) );
 
-void Grid::checkNeedleCrossLine(float* loc, float* angle)
-{
-    float endNeedle = *loc + needleLength * static_cast<float>(cos(static_cast<double>(*angle) * pi/180));
-    int lineLoc = 0;
-    for(int i = 0; i < 11; i++)
+    // Creates random double between 0.0 and 360.0 as the angle of the needle.
+    double angle = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX/360.0));
+
+    // Location of tip of needle calculated from the needle head location and the angle.
+    float needleTip = needleHead + getNeedleLength() * static_cast<float>( cos(angle * pi/180) );
+
+    // If you number the regions between the grid lines you can find which region you are in
+    // by taking your location divided by the line separation and floor that value.
+    float headRegion = floor(needleHead/getLineSeparation());
+    float tipRegion = floor(needleTip/getLineSeparation());
+
+    // If the head and tip of the needle are not in the same region, the needle must cross a line.
+    if(headRegion != tipRegion)
     {
-        lineLoc = i * lineSeparation;
-        if((*loc > lineLoc && endNeedle < lineLoc) || (endNeedle > lineLoc && *loc < lineLoc))
-        {
-            numCrosses++;
-            break;
-        }
+        (*crosses)++;
     }
 }
 
+float Grid::getLineSeparation()
+{
+    return lineSeparation;
+}
+
+float Grid::getNeedleLength()
+{
+    return needleLength;
+}
+
+int Grid::getGridSize()
+{
+    return gridSize;
+}
