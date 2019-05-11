@@ -8,8 +8,11 @@ private:
     float lineSeparation;
     float needleLength;
     int gridSize;
-    int numTrials;
-    int numCrosses;
-    void checkNeedleCrossLine();
+
+    void checkNeedleCrossLine(int* crosses);
+    float getLineSeparation();
+    float getNeedleLength();
+    int getGridSize();
+
     double pi = 3.14159265358979323846;
 };
