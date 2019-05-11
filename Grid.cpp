@@ -26,7 +26,9 @@ float Grid::approximatePi(int trials)
         // method isn't too big and confusing.
         throwNeedle(&numCrosses);
     }
-    return ((2*getNeedleLength() / getLineSeparation()) * (static_cast<float>(numTrials) / static_cast<float>(numCrosses)));
+    double appPi = ((2*getNeedleLength() / getLineSeparation()) * (static_cast<float>(numTrials) / static_cast<float>(numCrosses)));
+    setApproxPi(appPi);
+    return appPi;
 }
 
 /*
@@ -44,7 +46,7 @@ void Grid::throwNeedle(int* crosses)
     double angle = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX/360.0));
 
     // Location of tip of needle calculated from the needle head location and the angle.
-    float needleTip = needleHead + getNeedleLength() * static_cast<float>( cos(angle * pi/180) );
+    float needleTip = needleHead + getNeedleLength() * static_cast<float>( cos(angle * getPi()/180) );
 
     // If you number the regions between the grid lines you can find which region you are in
     // by taking your location divided by the line separation and floor that value.
@@ -56,6 +58,16 @@ void Grid::throwNeedle(int* crosses)
     {
         (*crosses)++;
     }
+}
+
+double Grid::error()
+{
+    return (getApproxPi() - getPi());
+}
+
+double Grid::accuracy()
+{
+    return (1.0 - abs(error())/getPi());
 }
 
 float Grid::getLineSeparation()
@@ -71,4 +83,19 @@ float Grid::getNeedleLength()
 int Grid::getGridSize()
 {
     return gridSize;
+}
+
+double Grid::getPi()
+{
+    return pi;
+}
+
+void Grid::setApproxPi(double appPi)
+{
+    approxPi = appPi;
+}
+
+double Grid::getApproxPi()
+{
+    return approxPi;
 }

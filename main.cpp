@@ -32,8 +32,14 @@ int main(){
         cout << "Number of Trials = ";
         cin >> numTrials;
 
-        float approxPi = test.approximatePi(numTrials);
+        double approxPi = test.approximatePi(numTrials);
         cout << "Approximate Pi: " << approxPi << endl;
+
+        double error = test.error();
+        cout << "Error = " << error << endl;
+
+        double accuracy = test.accuracy();
+        cout << "Accuracy = " << accuracy*100 << "%%" << endl;
 
         cout << "Would you like to try again (y/n)?" << endl;
         cin >> tryAgain;
