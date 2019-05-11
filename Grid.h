@@ -9,7 +9,7 @@ private:
     float needleLength;
     int gridSize;
 
-    void checkNeedleCrossLine(int* crosses);
+    void throwNeedle(int* crosses);
     float getLineSeparation();
     float getNeedleLength();
     int getGridSize();

@@ -24,7 +24,7 @@ float Grid::approximatePi(int trials)
         // Chose to keep as method so that it is easier to understand the code.
         // This way it is broken up into important tasks so the approximatePi
         // method isn't too big and confusing.
-        checkNeedleCrossLine(&numCrosses);
+        throwNeedle(&numCrosses);
     }
     return ((2*getNeedleLength() / getLineSeparation()) * (static_cast<float>(numTrials) / static_cast<float>(numCrosses)));
 }
@@ -34,7 +34,7 @@ float Grid::approximatePi(int trials)
     part is whether or not it crosses the line. Imagine the lines running vertical. The only part of the needle that 
     matters is the horizontal component because that is how it crosses the grid lines.
 */
-void Grid::checkNeedleCrossLine(int* crosses)
+void Grid::throwNeedle(int* crosses)
 {
     // Creates random float between 0.0 and the number of grid lines times line separation distance. 
     // Used for the location of the head of the needle.
